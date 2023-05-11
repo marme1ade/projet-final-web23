@@ -1,0 +1,362 @@
+openapi: 3.0.0
+info:
+  version: '1'
+  title: Projet Finale Web 2023
+  description: ''
+paths:
+  /cle:
+    get:
+      tags:
+        - Cle
+      summary: Obtenier ou modifier la clé d'api d'un usager
+      parameters:
+        - name: base
+          in: query
+          schema:
+            type: string
+          required: true
+          description: L'usager ainsi que le mdp séparé par un espace et encodé en BASE64
+        - name: nouvelle
+          in: query
+          schema:
+            type: boolean
+          required: true
+          description: Determine si on veut créer une nouvelle clé ou non
+      responses:
+        '200': 
+          description: Retourne la clé d'api d'un usager
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cle'
+
+  /usager:
+    post:
+      tags:
+        - Usager
+      summary: Créer un usager
+      parameters:
+        - name: nom
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Le nom de l'usager
+        - name: mdp
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Le mot de passe de l'usager non encodé
+      responses:
+        '200': 
+          description: Retourne l'objet usager
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usager'
+
+  /periode:
+    get:
+      tags:
+        - Périodes historiques
+      summary: Obtenir la liste des périodes historiques disponibles
+      responses:
+        '200': 
+          description: Retourne l'objet contenant les périodes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Periode'
+
+  /artiste:
+    get:
+      tags:
+        - Artiste
+      summary: Obtenir la liste des artistes
+      responses:
+        '200': 
+          description: Retourne l'objet contenant les artistes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artiste'
+    post:
+      tags:
+        - Artiste
+      summary: Créer un artiste
+      parameters:
+        - name: nom
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Le nom de l'artiste
+        - name: description
+          in: query
+          schema:
+            type: string
+          required: true
+          description: La description de l'artiste
+      responses:
+        '200': 
+          description: Retourne l'objet artiste
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artiste'
+
+  /composition:
+    put:
+      tags:
+        - Composition
+      summary: Modifier une composition
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: L'id de la composition
+        - name: id_periode
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: l'id de la periode historique
+        - name: nom
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Le nom de la composition
+        - name: description
+          in: query
+          schema:
+            type: string
+          required: true
+          description: La description de la composition
+      responses:
+        '200': 
+          description: Retourne l'objet contenant la composition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Composition'
+                
+    post:
+      tags:
+        - Composition
+      summary: Créer une composition
+      parameters:
+        - name: id_periode
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: l'id de la periode historique
+        - name: nom
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Le nom de la composition
+        - name: description
+          in: query
+          schema:
+            type: string
+          required: true
+          description: La description de la composition
+      responses:
+        '200': 
+          description: Retourne l'objet contenant la composition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Composition'
+  /compositions:
+    post:
+      tags:
+        - Composition
+      summary: Obtenir tous les compositions dun artiste
+      parameters:
+        - name: artiste
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: L'id de l'artiste
+      responses:
+        '200': 
+          description: Retourne les objets composition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Composition'
+
+  /partitionDownload:
+    get:
+      tags:
+        - Partition
+      summary: Obtenir une partition pour le téléchargement
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: L'id de la partition
+      responses:
+        '200': 
+          description: Retourne le fichier de partition, format application/octet-stream
+
+  /partition:
+    post:
+      tags:
+        - Partition
+      summary: Créer une partition et upload son fichier sur le serveur
+      parameters:
+        - name: id_periode
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: l'id de la periode historique
+        - name: id_composition
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: l'id de la composition de la partition
+        - name: nom
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Le nom de la partition
+      responses:
+        '200': 
+          description: Retourne lobjet partition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partition'
+    delete:
+      tags:
+        - Partition
+      summary: Supprimer la partition
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: l'id de la partition
+      responses:
+        '200': 
+          description: La partition a été supprimée
+
+  /partitions:
+    post:
+      tags:
+        - Partition
+      summary: Obtenir tous les partitions d'une composition
+      parameters:
+        - name: id_composition
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: L'id de la composition
+      responses:
+        '200': 
+          description: Retourne les objets partition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partition'
+
+components:
+  schemas:
+
+    Cle:
+      type: object
+      properties:
+        cle:
+          type: string
+      example:
+        cle: "abcdefghijklmnop"
+    Usager:
+      type: object
+      properties:
+        id:
+          type: integer
+        nom:
+          type: string
+        mdp:
+          type: string
+        cle_api:
+          type: string
+      example:
+        id: 1
+        nom: "bob"
+        mdp: "aifiusbf93aj498fnai4fna98nf"
+        cle_api: "abcdefghijklmnop"
+    Periode:
+      type: object
+      properties:
+        id:
+          type: integer
+        nom:
+          type: string
+      example:
+        id: 1
+        nom: "Médieval"
+    Artiste:
+      type: object
+      properties:
+        id:
+          type: integer
+        nom:
+          type: string
+        description:
+          type: string
+      example:
+        id: 1
+        nom: "Chopin"
+        description: "Chopin joue du piano"
+    Composition:
+      type: object
+      properties:
+        id:
+          type: integer
+        id_periode:
+          type: integer
+        nom:
+          type: string
+        description:
+          type: string
+      example:
+        id: 1
+        id_periode: 3
+        nom: "Nocturnes, opus 9"
+        description: "Compo de chopin, blablabla"
+    Partition:
+      type: object
+      properties:
+        id:
+          type: integer
+        id_periode:
+          type: integer
+        id_composition:
+          type: integer
+        nom:
+          type: string
+        upload_par:
+          type: integer
+      example:
+        id: 23
+        id_periode: 3
+        id_composition: 5
+        nom: "Nocturnes, opus 9"
+        upload_par: 1
